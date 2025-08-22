@@ -1,23 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard - Upload Attendees</title>
-  <script src="https://unpkg.com/@supabase/supabase-js"></script>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    form { margin-bottom: 20px; }
+    input, button { margin: 5px; padding: 8px; }
+    img { margin: 10px; border: 2px solid #ccc; border-radius: 5px; }
+    a { display: inline-block; margin-top: 15px; padding: 10px 15px; background: #007bff; color: white; border-radius: 5px; text-decoration: none; }
+    a:hover { background: #0056b3; }
+  </style>
 </head>
 <body>
   <h1>Attendee Dashboard</h1>
+
   <form id="uploadForm">
-    <input type="text" id="name" placeholder="Attendee Name" required>
-    <input type="file" id="fileInput" accept="image/*" required>
+    <input type="text" id="name" placeholder="Enter name" required />
+    <input type="file" id="fileInput" accept="image/*" required />
     <button type="submit">Upload</button>
   </form>
 
+  <h2>Attendees</h2>
   <div id="attendeesList"></div>
 
-  <button onclick="window.location.href='index.html'">Go to Scanner</button>
+  <a href="index.html">Go to Scanner</a>
 
-  <script src="js/dashboard.js"></script>
+  <script defer src="js/dashboard.js"></script>
 </body>
 </html>
