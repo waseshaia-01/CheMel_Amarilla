@@ -1,19 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Face Scanner</title>
-  <script src="https://unpkg.com/@supabase/supabase-js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/face-api.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/face-api.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; margin: 20px; }
+    video { border: 2px solid #000; border-radius: 8px; }
+    canvas { position: absolute; top: 0; left: 0; }
+    #status { margin: 15px 0; font-weight: bold; }
+    a { display: inline-block; margin-top: 15px; padding: 10px 15px; background: #007bff; color: white; border-radius: 5px; text-decoration: none; }
+    a:hover { background: #0056b3; }
+  </style>
 </head>
 <body>
   <h1>Face Scanner</h1>
-  <video id="video" width="720" height="560" autoplay muted></video>
   <p id="status">Loading models...</p>
+  <video id="video" width="720" height="560" autoplay muted></video>
+  <br>
+  <a href="dashboard.html">Go to Dashboard</a>
 
-  <button onclick="window.location.href='dashboard.html'">Go to Dashboard</button>
-
-  <script src="js/scanner.js"></script>
+  <script defer src="js/scanner.js"></script>
 </body>
 </html>
