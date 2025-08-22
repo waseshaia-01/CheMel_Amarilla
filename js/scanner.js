@@ -1,16 +1,17 @@
-// Replace with your Supabase details
+// Supabase config
 const SUPABASE_URL = "https://lwsozcrubhmcvqutsfje.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx3c296Y3J1YmhtY3ZxdXRzZmplIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU4NDIxNTQsImV4cCI6MjA3MTQxODE1NH0.fx6W2L66WFdkbxC9BKvJC7AzNHE4VS8tPu4YDf3YD9E";
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const SUPABASE_KEY = "YOUR-ANON-KEY-HERE";  // <-- replace with anon key
+const { createClient } = supabase;
+const client = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const video = document.getElementById("video");
 const statusEl = document.getElementById("status");
 
-// Load models
+// Load models (path fixed for GitHub Pages)
 Promise.all([
-  faceapi.nets.tinyFaceDetector.loadFromUri("models"),
-  faceapi.nets.faceLandmark68Net.loadFromUri("models"),
-  faceapi.nets.faceRecognitionNet.loadFromUri("models"),
+  faceapi.nets.tinyFaceDetector.loadFromUri("/CheMel_Amarilla/models"),
+  faceapi.nets.faceLandmark68Net.loadFromUri("/CheMel_Amarilla/models"),
+  faceapi.nets.faceRecognitionNet.loadFromUri("/CheMel_Amarilla/models"),
 ]).then(startVideo);
 
 function startVideo() {
@@ -26,14 +27,17 @@ function startVideo() {
 let labeledDescriptors = [];
 
 async function loadAttendees() {
-  const { data, error } = await supabase.from("attendees").select("*");
+  const { data, error } = await client.from("attendees").select("*");
   if (error) return console.error(error);
 
   labeledDescriptors = await Promise.all(
     data.map(async (att) => {
       const imgUrl = `${SUPABASE_URL}/storage/v1/object/public/attendees/${att.image_url}`;
       const img = await faceapi.fetchImage(imgUrl);
-      const detections = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor();
+      const detections = await faceapi
+        .detectSingleFace(img)
+        .withFaceLandmarks()
+        .withFaceDescriptor();
       if (!detections) return null;
       return new faceapi.LabeledFaceDescriptors(att.name, [detections.descriptor]);
     })
@@ -59,7 +63,9 @@ video.addEventListener("play", () => {
 
     if (labeledDescriptors.length > 0) {
       const faceMatcher = new faceapi.FaceMatcher(labeledDescriptors, 0.6);
-      const results = resizedDetections.map((d) => faceMatcher.findBestMatch(d.descriptor));
+      const results = resizedDetections.map((d) =>
+        faceMatcher.findBestMatch(d.descriptor)
+      );
 
       results.forEach((result, i) => {
         const box = resizedDetections[i].detection.box;
