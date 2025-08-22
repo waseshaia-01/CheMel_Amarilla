@@ -1,7 +1,8 @@
-// Replace with your Supabase details
+// Supabase config
 const SUPABASE_URL = "https://lwsozcrubhmcvqutsfje.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx3c296Y3J1YmhtY3ZxdXRzZmplIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU4NDIxNTQsImV4cCI6MjA3MTQxODE1NH0.fx6W2L66WFdkbxC9BKvJC7AzNHE4VS8tPu4YDf3YD9E";
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const SUPABASE_KEY = "YOUR-ANON-KEY-HERE";  // <-- replace with anon key
+const { createClient } = supabase;
+const client = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const form = document.getElementById("uploadForm");
 const attendeesList = document.getElementById("attendeesList");
@@ -16,8 +17,8 @@ form.addEventListener("submit", async (e) => {
 
   const fileName = `${Date.now()}_${file.name}`;
 
-  // Upload to Supabase bucket "attendees"
-  const { error } = await supabase.storage
+  // Upload to Supabase bucket
+  const { error } = await client.storage
     .from("attendees")
     .upload(fileName, file);
 
@@ -26,12 +27,9 @@ form.addEventListener("submit", async (e) => {
     return;
   }
 
-  // Save record in attendees table
-  const { error: dbError } = await supabase.from("attendees").insert([
-    {
-      name: name,
-      image_url: fileName,
-    },
+  // Insert record
+  const { error: dbError } = await client.from("attendees").insert([
+    { name: name, image_url: fileName },
   ]);
 
   if (dbError) {
@@ -42,14 +40,14 @@ form.addEventListener("submit", async (e) => {
   }
 });
 
-// Load attendee list
+// Load attendees
 async function loadAttendees() {
-  const { data, error } = await supabase.from("attendees").select("*");
+  const { data, error } = await client.from("attendees").select("*");
   if (error) return console.error(error);
 
   attendeesList.innerHTML = "";
   data.forEach((att) => {
-    attendeesList.innerHTML += `<p>${att.name} - <img src="${SUPABASE_URL}/storage/v1/object/public/attendees/${att.image_url}" width="100"></p>`;
+    attendeesList.innerHTML += `<p>${att.name}<br><img src="${SUPABASE_URL}/storage/v1/object/public/attendees/${att.image_url}" width="120"></p>`;
   });
 }
 
